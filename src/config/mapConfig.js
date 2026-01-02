@@ -30,8 +30,8 @@ export const ICONS = {
 };
 
 export const ENERGY_POINTS = [
-  { id: "piezo-1", type: "piezo", coords: [16.358, 48.21] },
-  { id: "solar-1", type: "solar", coords: [16.365, 48.212] },
+  { id: "piezo-1", type: "piezo", coords: [16.39382263184521, 48.2162766864067] },
+  { id: "solar-1", type: "solar", coords: [16.367652992176914, 48.23137697467379] },
   { id: "bench-1", type: "bench", coords: [16.37, 48.208] },
   { id: "boat-1", type: "boat", coords: [16.39607969849243, 48.23627216501569] },
   { id: "passerelle-1", type: "passerelle", coords: [16.38950562530448, 48.2436468978519] }

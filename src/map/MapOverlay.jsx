@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Howl } from "howler";
 import MapMarker from "../components/MapMarker";
-import EnergyPop from "../components/EnergyPop";
+import MarkerPanel from "../components/MarkerPanel";
 import { MAP_DESCRIPTIONS } from "../config/mapDescriptions";
 import { ICONS } from "../config/mapConfig";
 import { MAP_SOUNDS } from "../config/mapSounds";
@@ -78,17 +78,16 @@ export default function MapOverlay({ markers, riverMarker }) {
         )}
       </div>
 
-      {activePopup && (
-        <EnergyPop
-          x={activePopup.x}
-          y={activePopup.y}
+      {activePopup && MAP_DESCRIPTIONS[activePopup.type] && (
+        <MarkerPanel
+          title={MAP_DESCRIPTIONS[activePopup.type].title}
+          body={MAP_DESCRIPTIONS[activePopup.type].body}
+          image={MAP_DESCRIPTIONS[activePopup.type].image}
           onClose={() => {
             stopSound();
             setActivePopup(null);
           }}
-        >
-          {MAP_DESCRIPTIONS[activePopup.type]}
-        </EnergyPop>
+        />
       )}
     </>
   );
