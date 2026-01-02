@@ -11,7 +11,7 @@ export const MAP_STYLE_NIGHT = import.meta.env.VITE_MAPBOX_STYLE_NIGHT;
 
 export const MAP_VIEW = {
   center: [16.3738, 48.2082],
-  zoom: 12,
+  zoom: 13.0,
   bearing: 90,
   pitch: 0,
   bounds: [
