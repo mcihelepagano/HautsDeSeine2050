@@ -6,7 +6,7 @@ import { MAP_DESCRIPTIONS } from "../config/mapDescriptions";
 import { ICONS } from "../config/mapConfig";
 import { MAP_SOUNDS } from "../config/mapSounds";
 
-export default function MapOverlay({ markers, riverMarker }) {
+export default function MapOverlay({ markers, riverMarker, mode }) {
   const [activePopup, setActivePopup] = useState(null);
   const soundRef = useRef(null);
 
@@ -45,6 +45,15 @@ export default function MapOverlay({ markers, riverMarker }) {
     playSound("river");
   };
 
+  const showInDay = new Set(["solar", "arbres"]);
+  const showInNight = new Set(["lamp", "piste"]);
+
+  const visibleMarkers = markers.filter((marker) => {
+    if (mode === "day") return !showInNight.has(marker.type);
+    if (mode === "night") return !showInDay.has(marker.type);
+    return true;
+  });
+
   return (
     <>
       <div
@@ -57,12 +66,19 @@ export default function MapOverlay({ markers, riverMarker }) {
           pointerEvents: "none"
         }}
       >
-        {markers.map((marker) => (
+        {visibleMarkers.map((marker) => (
           <MapMarker
             key={marker.id}
             x={marker.x}
             y={marker.y}
             icon={ICONS[marker.type]}
+            size={
+              marker.type === "hydra"
+                ? 64
+                : ["sols", "piste", "lamp", "geotherm"].includes(marker.type)
+                  ? 40
+                  : 32
+            }
             onClick={() => handleMarkerClick(marker)}
           />
         ))}

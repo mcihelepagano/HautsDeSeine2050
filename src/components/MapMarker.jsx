@@ -1,6 +1,6 @@
 import { motion as Motion } from "framer-motion";
 
-export default function MapMarker({ x, y, icon, onClick }) {
+export default function MapMarker({ x, y, icon, onClick, size = 32 }) {
   return (
     <>
       {/* Effetto GLOW */}
@@ -40,8 +40,8 @@ export default function MapMarker({ x, y, icon, onClick }) {
           position: "absolute",
           left: x,
           top: y,
-          width: "32px",
-          height: "32px",
+          width: `${size}px`,
+          height: `${size}px`,
           transform: "translate(-50%, -50%)",
           cursor: "pointer",
           zIndex: 10,

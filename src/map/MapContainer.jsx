@@ -74,7 +74,7 @@ export default function MapContainer({ mode }) {
   return (
     <>
       <div ref={containerRef} style={{ width: "100vw", height: "100vh" }} />
-      <MapOverlay markers={markers} riverMarker={riverMarker} />
+      <MapOverlay markers={markers} riverMarker={riverMarker} mode={mode} />
     </>
   );
 }
