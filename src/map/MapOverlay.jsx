@@ -71,6 +71,7 @@ export default function MapOverlay({ markers, riverMarker, mode }) {
             key={marker.id}
             x={marker.x}
             y={marker.y}
+            type={marker.type}
             icon={ICONS[marker.type]}
             size={
               marker.type === "hydra"
@@ -88,6 +89,7 @@ export default function MapOverlay({ markers, riverMarker, mode }) {
             key={riverMarker.id}
             x={riverMarker.x}
             y={riverMarker.y}
+            type="river"
             icon={ICONS.river}
             onClick={handleRiverClick}
           />
