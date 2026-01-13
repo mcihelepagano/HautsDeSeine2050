@@ -9,7 +9,7 @@ import imagePiste from "../assets/images/Piste-cyclabile.png";
 import imageLamp from "../assets/images/Lampadaires.png";
 import imageSols from "../assets/images/Sols.png";
 import imageArbres from "../assets/images/arbres.png";
-import imageBench from "../assets/images/bench.png";
+import imageBench from "../assets/images/Bench.png";
 
 export const MAP_DESCRIPTIONS = {
   piezo: {
