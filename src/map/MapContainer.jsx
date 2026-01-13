@@ -16,6 +16,7 @@ export default function MapContainer({ mode }) {
   const containerRef = useRef(null);
   const [markers, setMarkers] = useState([]);
   const [riverMarker, setRiverMarker] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const projectAll = useCallback((map) => {
     if (!map) return;
@@ -34,11 +35,12 @@ export default function MapContainer({ mode }) {
     if (mapRef.current || !containerRef.current) return;
 
     mapboxgl.accessToken = MAPBOX_TOKEN;
+    const startZoom = isMobile ? Math.max(MAP_VIEW.zoom - 1.2, 10) : MAP_VIEW.zoom;
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: MAP_STYLE_DAY,
       center: MAP_VIEW.center,
-      zoom: MAP_VIEW.zoom,
+      zoom: startZoom,
       bearing: MAP_VIEW.bearing,
       pitch: MAP_VIEW.pitch,
       antialias: true,
@@ -60,7 +62,7 @@ export default function MapContainer({ mode }) {
       map.remove();
       mapRef.current = null;
     };
-  }, [projectAll]);
+  }, [projectAll, isMobile]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -70,6 +72,21 @@ export default function MapContainer({ mode }) {
     map.setStyle(style);
     map.once("styledata", () => projectAll(map));
   }, [mode, projectAll]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 900px)");
+    const handleChange = (event) => setIsMobile(event.matches);
+    handleChange(media);
+    media.addEventListener("change", handleChange);
+    return () => media.removeEventListener("change", handleChange);
+  }, []);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const map = mapRef.current;
+    const targetZoom = isMobile ? Math.max(MAP_VIEW.zoom - 1.2, 10) : MAP_VIEW.zoom;
+    map.easeTo({ zoom: targetZoom, duration: 600, easing: (t) => t * (2 - t) });
+  }, [isMobile]);
 
   return (
     <>

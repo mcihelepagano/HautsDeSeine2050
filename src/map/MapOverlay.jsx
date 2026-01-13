@@ -8,24 +8,43 @@ import { MAP_SOUNDS } from "../config/mapSounds";
 
 export default function MapOverlay({ markers, riverMarker, mode }) {
   const [activePopup, setActivePopup] = useState(null);
+  const [activeSoundType, setActiveSoundType] = useState(null);
   const soundRef = useRef(null);
 
   const stopSound = () => {
-    if (!soundRef.current) return;
+    if (!soundRef.current) {
+      setActiveSoundType(null);
+      return;
+    }
     soundRef.current.stop();
     soundRef.current = null;
+    setActiveSoundType(null);
   };
 
   const playSound = (type) => {
     const sound = MAP_SOUNDS[type];
     if (!sound) return;
 
-    soundRef.current = new Howl({
+    const soundInstance = new Howl({
       src: [sound.src],
       loop: sound.loop,
       volume: sound.volume
     });
-    soundRef.current.play();
+    soundRef.current = soundInstance;
+    setActiveSoundType(type);
+
+    const clearIfCurrent = () => {
+      if (soundRef.current !== soundInstance) return;
+      setActiveSoundType(null);
+    };
+
+    soundInstance.on("stop", clearIfCurrent);
+    soundInstance.on("loaderror", clearIfCurrent);
+    if (!sound.loop) {
+      soundInstance.on("end", clearIfCurrent);
+    }
+
+    soundInstance.play();
   };
 
   useEffect(() => {
@@ -56,6 +75,25 @@ export default function MapOverlay({ markers, riverMarker, mode }) {
 
   return (
     <>
+      {activeSoundType && (
+        <div className="sound-indicator" role="status" aria-live="polite">
+          <span className="sound-indicator__pulse" aria-hidden="true" />
+          <svg
+            className="sound-indicator__icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M3 9.5v5h3.6l4.4 3.6V5.9L6.6 9.5H3zm11.2-1.9a6 6 0 0 1 0 8.8m2.8-11.6a9.5 9.5 0 0 1 0 14.4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      )}
       <div
         style={{
           position: "absolute",
