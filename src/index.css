@@ -142,12 +142,17 @@ button:focus-visible {
 
 @media (max-width: 600px) {
   .tour-controls {
-    left: 14px;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    transform: none;
+    max-width: 70vw;
   }
 
   .tour-button {
-    font-size: 13px;
-    padding: 10px 14px;
+    font-size: 11px;
+    padding: 4px 8px;
+    max-width: 170px;
   }
 
   .tour-message {
