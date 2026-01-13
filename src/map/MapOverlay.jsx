@@ -6,10 +6,17 @@ import { MAP_DESCRIPTIONS } from "../config/mapDescriptions";
 import { ICONS } from "../config/mapConfig";
 import { MAP_SOUNDS } from "../config/mapSounds";
 
-export default function MapOverlay({ markers, riverMarker, mode }) {
+export default function MapOverlay({
+  markers,
+  riverMarker,
+  mode,
+  forcedPopup,
+  onUserInteract
+}) {
   const [activePopup, setActivePopup] = useState(null);
   const [activeSoundType, setActiveSoundType] = useState(null);
   const soundRef = useRef(null);
+  const lastForcedIdRef = useRef(null);
 
   const stopSound = () => {
     if (!soundRef.current) {
@@ -52,6 +59,7 @@ export default function MapOverlay({ markers, riverMarker, mode }) {
   }, []);
 
   const handleMarkerClick = (marker) => {
+    if (onUserInteract) onUserInteract();
     stopSound();
     setActivePopup({ ...marker });
     playSound(marker.type);
@@ -59,6 +67,7 @@ export default function MapOverlay({ markers, riverMarker, mode }) {
 
   const handleRiverClick = () => {
     if (!riverMarker) return;
+    if (onUserInteract) onUserInteract();
     stopSound();
     setActivePopup({ ...riverMarker, type: "river" });
     playSound("river");
@@ -72,6 +81,25 @@ export default function MapOverlay({ markers, riverMarker, mode }) {
     if (mode === "night") return !showInDay.has(marker.type);
     return true;
   });
+
+  useEffect(() => {
+    if (!forcedPopup) {
+      if (lastForcedIdRef.current && activePopup?.id === lastForcedIdRef.current) {
+        stopSound();
+        setActivePopup(null);
+      }
+      lastForcedIdRef.current = null;
+      return;
+    }
+
+    const forcedId = forcedPopup.id || forcedPopup.type;
+    lastForcedIdRef.current = forcedId;
+    stopSound();
+    setActivePopup({ ...forcedPopup });
+    if (forcedPopup.type) {
+      playSound(forcedPopup.type);
+    }
+  }, [forcedPopup]);
 
   return (
     <>

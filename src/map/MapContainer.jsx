@@ -14,9 +14,20 @@ import {
 export default function MapContainer({ mode }) {
   const mapRef = useRef(null);
   const containerRef = useRef(null);
+  const tourTokenRef = useRef(0);
   const [markers, setMarkers] = useState([]);
   const [riverMarker, setRiverMarker] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTouring, setIsTouring] = useState(false);
+  const [forcedPopup, setForcedPopup] = useState(null);
+  const [tourMessage, setTourMessage] = useState("");
+
+  const tourStops = [
+    RIVER_POINT,
+    ENERGY_POINTS.find((point) => point.type === "boat"),
+    ENERGY_POINTS.find((point) => point.type === "hydra"),
+    ENERGY_POINTS.find((point) => point.type === "arbres")
+  ].filter(Boolean);
 
   const projectAll = useCallback((map) => {
     if (!map) return;
@@ -88,10 +99,83 @@ export default function MapContainer({ mode }) {
     map.easeTo({ zoom: targetZoom, duration: 600, easing: (t) => t * (2 - t) });
   }, [isMobile]);
 
+  useEffect(() => {
+    if (!tourMessage) return undefined;
+    const timeout = window.setTimeout(() => {
+      setTourMessage("");
+    }, 5000);
+    return () => window.clearTimeout(timeout);
+  }, [tourMessage]);
+
+  const stopTour = useCallback(() => {
+    tourTokenRef.current += 1;
+    setIsTouring(false);
+    setForcedPopup(null);
+    setTourMessage("");
+  }, []);
+
+  const runTour = useCallback(async () => {
+    if (!mapRef.current || tourStops.length === 0) return;
+    stopTour();
+    setIsTouring(true);
+    setTourMessage("");
+    const token = tourTokenRef.current;
+    const map = mapRef.current;
+
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    for (const stop of tourStops) {
+      if (tourTokenRef.current !== token) return;
+      map.easeTo({
+        center: stop.coords,
+        duration: 3200,
+        easing: (t) => t * t * (3 - 2 * t)
+      });
+      await wait(3200);
+      if (tourTokenRef.current !== token) return;
+      setForcedPopup({ id: stop.id, type: stop.type });
+      await wait(4200);
+      if (tourTokenRef.current !== token) return;
+      setForcedPopup(null);
+      await wait(300);
+    }
+
+    if (tourTokenRef.current === token) {
+      setIsTouring(false);
+      setTourMessage(
+        "Tu peux maintenant explorer librement la carte et découvrir également la version nocturne!"
+      );
+    }
+  }, [stopTour, tourStops]);
+
   return (
     <>
       <div ref={containerRef} style={{ width: "100vw", height: "100vh" }} />
-      <MapOverlay markers={markers} riverMarker={riverMarker} mode={mode} />
+      <div className="tour-controls">
+        <button
+          className="tour-button"
+          type="button"
+          onClick={() => {
+            if (isTouring) {
+              stopTour();
+              return;
+            }
+            runTour();
+          }}
+        >
+          {isTouring ? "Arrêter le tour" : "Clique ici pour découvrir le territoire"}
+        </button>
+      </div>
+      {tourMessage && (
+        <p className="tour-message tour-message--center">{tourMessage}</p>
+      )}
+      <MapOverlay
+        markers={markers}
+        riverMarker={riverMarker}
+        mode={mode}
+        forcedPopup={forcedPopup}
+        onUserInteract={stopTour}
+      />
     </>
   );
 }

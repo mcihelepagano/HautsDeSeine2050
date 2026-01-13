@@ -9,15 +9,16 @@ export default function ModeToggleButton({ mode, onToggle }) {
         position: "absolute",
         top: "20px",
         left: "20px",
-        padding: "10px 20px",
+        padding: "14px 28px",
         borderRadius: "8px",
+        fontSize: "16px",
         background: isDay ? "#222" : "#fff",
         color: isDay ? "#fff" : "#000",
         zIndex: 999,
         cursor: "pointer"
       }}
     >
-      {isDay ? "Night" : "Day"}
+      {isDay ? "Nuit" : "Jour"}
     </button>
   );
 }
