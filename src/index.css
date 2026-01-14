@@ -365,8 +365,7 @@ button:focus-visible {
   }
 
   .marker-panel__image-wrap img {
-    height: 200px;
-    object-fit: contain;
+    height: 180px;
   }
 
   .marker-panel__close {
@@ -398,11 +397,11 @@ button:focus-visible {
 
 @keyframes panel-in-mobile {
   from {
-    transform: translateY(14px);
+    transform: translate(-50%, 14px);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translate(-50%, 0);
     opacity: 1;
   }
 }
