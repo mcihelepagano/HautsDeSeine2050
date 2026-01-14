@@ -132,23 +132,32 @@ export default function MapOverlay({
           pointerEvents: "none"
         }}
       >
-        {visibleMarkers.map((marker) => (
-          <MapMarker
-            key={marker.id}
-            x={marker.x}
-            y={marker.y}
-            type={marker.type}
-            icon={ICONS[marker.type]}
-            size={
-              marker.type === "hydra"
-                ? 64
-                : ["sols", "piste", "lamp", "geotherm"].includes(marker.type)
-                  ? 40
-                  : 32
-            }
-            onClick={() => handleMarkerClick(marker)}
-          />
-        ))}
+        {visibleMarkers.map((marker) => {
+          const isLarge = marker.type === "hydra";
+          const isMedium = [
+            "sols",
+            "piste",
+            "lamp",
+            "geotherm",
+            "boat",
+            "passerelle",
+            "piezo",
+            "bench",
+            "solar"
+          ].includes(marker.type);
+
+          return (
+            <MapMarker
+              key={marker.id}
+              x={marker.x}
+              y={marker.y}
+              type={marker.type}
+              icon={ICONS[marker.type]}
+              size={isLarge ? 64 : isMedium ? 40 : 32}
+              onClick={() => handleMarkerClick(marker)}
+            />
+          );
+        })}
 
         {riverMarker && (
           <MapMarker
@@ -157,6 +166,7 @@ export default function MapOverlay({
             y={riverMarker.y}
             type="river"
             icon={ICONS.river}
+            size={40}
             onClick={handleRiverClick}
           />
         )}

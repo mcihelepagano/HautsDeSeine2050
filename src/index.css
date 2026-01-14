@@ -364,7 +364,8 @@ button:focus-visible {
   }
 
   .marker-panel__image-wrap img {
-    height: 180px;
+    height: 200px;
+    object-fit: contain;
   }
 
   .marker-panel__close {
