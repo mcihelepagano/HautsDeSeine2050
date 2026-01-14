@@ -353,7 +353,7 @@ button:focus-visible {
     right: 0;
     left: 0;
     bottom: 0;
-    width: 100vw;
+    width: 100%;
     height: min(68vh, 520px);
     padding: 18px 18px 20px;
     border-radius: 20px 20px 0 0;
