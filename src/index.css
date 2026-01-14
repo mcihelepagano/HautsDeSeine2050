@@ -350,10 +350,11 @@ button:focus-visible {
 @media (max-width: 900px) {
   .marker-panel {
     top: auto;
-    right: 0;
-    left: 0;
+    right: auto;
+    left: 50%;
     bottom: 0;
-    width: 100%;
+    width: min(96vw, 520px);
+    transform: translateX(-50%);
     height: min(68vh, 520px);
     padding: 18px 18px 20px;
     border-radius: 20px 20px 0 0;
